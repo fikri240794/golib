@@ -7,31 +7,31 @@ import (
 	"github.com/fikri240794/golib/errors"
 )
 
-type BasePaginationParamsDTO struct {
+type PaginationParamsDTO struct {
 	Skip int64
 	Take int64
 }
 
-func NewBasePaginationParamsDTO() *BasePaginationParamsDTO {
-	return &BasePaginationParamsDTO{
+func NewPaginationParamsDTO() *PaginationParamsDTO {
+	return &PaginationParamsDTO{
 		Skip: 0,
 		Take: 100,
 	}
 }
 
-func (dto *BasePaginationParamsDTO) SetSkip(skip int64) *BasePaginationParamsDTO {
+func (dto *PaginationParamsDTO) SetSkip(skip int64) *PaginationParamsDTO {
 	dto.Skip = skip
 
 	return dto
 }
 
-func (dto *BasePaginationParamsDTO) SetTake(take int64) *BasePaginationParamsDTO {
+func (dto *PaginationParamsDTO) SetTake(take int64) *PaginationParamsDTO {
 	dto.Take = take
 
 	return dto
 }
 
-func (dto *BasePaginationParamsDTO) Validate() error {
+func (dto *PaginationParamsDTO) Validate() error {
 	var errFields []errors.ErrorField = []errors.ErrorField{}
 
 	if dto.Skip < 0 {

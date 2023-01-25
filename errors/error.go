@@ -1,14 +1,14 @@
 package errors
 
-import "github.com/fikri240794/golib/status_code"
+import "github.com/fikri240794/golib/models/enums"
 
 type Error struct {
-	Code        status_code.StatusCode
+	Code        enums.StatusCode
 	Message     string
 	ErrorFields []ErrorField
 }
 
-func NewError(code status_code.StatusCode, message string, errorFields ...ErrorField) Error {
+func NewError(code enums.StatusCode, message string, errorFields ...ErrorField) Error {
 	var err Error = Error{
 		Code:        code,
 		Message:     message,

@@ -1,4 +1,4 @@
-package status_code
+package enums
 
 import (
 	"net/http"
