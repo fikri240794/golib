@@ -6,14 +6,12 @@ import (
 )
 
 type Task interface {
-	AddTask(task func())
+	Go(task func())
 	Wait()
 }
 
 type task struct {
-	sync.Mutex
 	maxConcurrentTask int
-	tasks             []func()
 	wg                sync.WaitGroup
 	c                 chan struct{}
 }
@@ -21,7 +19,6 @@ type task struct {
 func NewTask(cfg *Config) Task {
 	var t *task = &task{
 		maxConcurrentTask: runtime.NumCPU(),
-		tasks:             []func(){},
 	}
 
 	if cfg != nil {
@@ -35,26 +32,20 @@ func NewTask(cfg *Config) Task {
 	return t
 }
 
-func (t *task) AddTask(task func()) {
-	t.Lock()
-	t.tasks = append(t.tasks, task)
-	t.Unlock()
+func (t *task) Go(task func()) {
+	t.wg.Add(1)
+
+	go func(taskToDo func()) {
+		defer func() {
+			t.wg.Done()
+			<-t.c
+		}()
+
+		t.c <- struct{}{}
+		taskToDo()
+	}(task)
 }
 
 func (t *task) Wait() {
-	for i := 0; i < len(t.tasks); i++ {
-		t.wg.Add(1)
-
-		go func(taskIndex int) {
-			defer func() {
-				t.wg.Done()
-				<-t.c
-			}()
-
-			t.c <- struct{}{}
-			t.tasks[taskIndex]()
-		}(i)
-	}
-
 	t.wg.Wait()
 }
